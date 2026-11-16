@@ -2,17 +2,19 @@
 
 ## Propósito
 
-Proyecto de automatización de pruebas desarrollado con Python, Pytest, Selenium WebDriver y Requests.
+Proyecto de automatización de pruebas desarrollado con Python, Pytest, Selenium WebDriver, Requests y Behave.
 
-El objetivo es validar funcionalidades principales de una aplicación web mediante pruebas automatizadas y ampliar la cobertura con pruebas de servicios API.
+El objetivo es validar funcionalidades principales de una aplicación web mediante pruebas automatizadas, ampliar la cobertura con pruebas de servicios API e incorporar escenarios BDD para describir comportamientos desde la perspectiva del usuario.
 
-Se aplican buenas prácticas de QA, reutilización de código, parametrización, manejo de datos externos y validaciones funcionales.
+Se aplican buenas prácticas de QA, reutilización de código, parametrización, manejo de datos externos, validaciones funcionales y generación de evidencias.
 
 ## Tecnologías
 
 - Python 3
 - Selenium WebDriver 4
 - Pytest
+- Behave
+- Gherkin
 - pytest-html
 - Requests
 - Faker
@@ -33,8 +35,20 @@ pre-entrega-automation-testing-monica-carena/
 |   |-- login.csv
 |   |-- productos.json
 |
+|-- features/
+|   |-- steps/
+|   |   |-- login_steps.py
+|   |   |-- cart_steps.py
+|   |-- login.feature
+|   |-- cart.feature
+|   |-- environment.py
+|
 |-- logs/
 |   |-- .gitkeep
+|
+|-- pages/
+|   |-- login_page.py
+|   |-- inventory_page.py
 |
 |-- reports/
 |   |-- .gitkeep
@@ -50,30 +64,22 @@ pre-entrega-automation-testing-monica-carena/
 |   |-- test_create_user_api.py
 |   |-- test_post_lifecycle.py
 |
+|-- tests_behave/
+|   |-- test_behave_suite.py
+|
 |-- utils/
 |   |-- api_utils.py
 |   |-- driver_factory.py
 |   |-- datos.py
 |   |-- saucedemo_helpers.py
 |
+|-- behave.ini
 |-- conftest.py
 |-- pytest.ini
 |-- requirements.txt
 |-- .gitignore
 |-- README.md
 ```
-
-## Instalación
-
-### 1. Clonar el repositorio
-
-```bash
-git clone https://github.com/mocarena/pre-entrega-automation-testing-monica-carena.git
-cd pre-entrega-automation-testing-monica-carena
-```
-
-### 2. Crear y activar un entorno virtual
-
 
 ## Instalación
 
@@ -104,12 +110,28 @@ pip install -r requirements.txt
 
 Es necesario tener Google Chrome instalado para ejecutar las pruebas web.
 
+### 4. Configurar la API Key de ReqRes
+
+Para ejecutar las pruebas contra ReqRes es necesario configurar una API Key.
+
+En PowerShell (Windows):
+
+```powershell
+$env:REQRES_API_KEY = "TU_API_KEY"
+```
+
+La clave se utiliza mediante la variable de entorno `REQRES_API_KEY` y no debe incluirse directamente en el código ni publicarse en GitHub.
+
+Esta configuración se mantiene durante la sesión actual de PowerShell. Para GitHub Actions, la clave se configura como un secret del repositorio.
+
 ## Ejecución de las pruebas
 
-Ejecutar toda la suite:
+### Suite completa
+
+Ejecutar todas las pruebas UI, API y BDD:
 
 ```bash
-python -m pytest tests/ tests_api/ -v
+python -m pytest
 ```
 
 ### Pruebas web con Selenium
@@ -134,7 +156,7 @@ python -m pytest tests/test_saucedemo.py -v
 
 ### Pruebas de API
 
-Las pruebas de API se realizan utilizando Requests y el servicio ReqRes.
+Las pruebas de API se realizan utilizando Requests y los servicios ReqRes y JSONPlaceholder.
 
 Ejecutar todos los tests de API:
 
@@ -178,21 +200,6 @@ Se comprueban los códigos de respuesta, los datos devueltos, los tipos y el tie
 
 Para este ejercicio se utiliza JSONPlaceholder, que simula las operaciones de escritura sin persistir realmente los cambios en una base de datos.
 
-
-### 4. Configurar la API Key de ReqRes
-
-Para ejecutar las pruebas contra ReqRes es necesario configurar una API Key.
-
-En PowerShell (Windows):
-
-```powershell
-$env:REQRES_API_KEY = "TU_API_KEY"
-```
-
-La clave se utiliza mediante la variable de entorno `REQRES_API_KEY` y no debe incluirse directamente en el código ni publicarse en GitHub.
-
-Esta configuración se mantiene durante la sesión actual de PowerShell.
-
 ### Pruebas smoke
 
 Ejecutar las pruebas marcadas como smoke:
@@ -201,6 +208,61 @@ Ejecutar las pruebas marcadas como smoke:
 python -m pytest -m smoke -v
 ```
 
+## Pruebas BDD con Behave y Gherkin
+
+Se incorporaron escenarios BDD para describir y validar comportamientos de SauceDemo utilizando lenguaje Gherkin.
+
+Los escenarios se organizan en archivos `.feature` y utilizan la estructura:
+
+- **Given:** contexto inicial.
+- **When:** acción realizada.
+- **Then:** resultado esperado.
+
+Se implementaron escenarios para:
+
+- Login exitoso con usuario estándar.
+- Login rechazado con credenciales incorrectas.
+- Login rechazado para un usuario bloqueado.
+- Validación del mensaje de error cuando las credenciales están vacías.
+- Incorporación de un producto al carrito y validación de su contenido.
+
+Se utiliza `Scenario Outline` con `Examples` para reutilizar un mismo escenario con distintas combinaciones de credenciales.
+
+### Organización de BDD
+
+- `features/login.feature`: escenarios de autenticación.
+- `features/cart.feature`: escenario de gestión del carrito.
+- `features/steps/`: implementación de los pasos Gherkin.
+- `features/environment.py`: inicialización y cierre del navegador, además de capturas ante errores.
+- `pages/`: Page Objects que centralizan los localizadores y las acciones de las páginas.
+- `tests_behave/test_behave_suite.py`: integración de las ejecuciones Behave con Pytest.
+- `behave.ini`: configuración de Behave.
+
+Cada escenario inicia y cierra su propio navegador para mantener el aislamiento entre ejecuciones.
+
+### Ejecutar BDD directamente
+
+Ejecutar los escenarios smoke:
+
+```bash
+python -m behave --tags="@smoke" --format=pretty
+```
+
+Ejecutar los escenarios de regresión:
+
+```bash
+python -m behave --tags="@regression" --format=pretty
+```
+
+### Ejecutar BDD desde Pytest
+
+Ejecutar los tests de integración:
+
+```bash
+python -m pytest tests_behave/ -v
+```
+
+La integración permite incluir las ejecuciones BDD dentro de la suite general de Pytest.
 
 ## Generación del reporte HTML
 
@@ -312,6 +374,21 @@ Se valida:
 
 El test está identificado con el marcador `@pytest.mark.e2e`.
 
+### 10. Escenarios BDD
+
+Se utilizan archivos Gherkin para describir comportamientos funcionales de la aplicación.
+
+Se validan:
+
+- Autenticación exitosa.
+- Rechazo de credenciales incorrectas.
+- Acceso denegado a usuarios bloqueados.
+- Validación de campos vacíos.
+- Agregado de productos al carrito.
+- Verificación del contador y del producto dentro del carrito.
+
+Los Page Objects permiten separar la lógica de interacción con la interfaz de las definiciones de pasos.
+
 ## Estrategias de localización y sincronización
 
 El proyecto utiliza distintos localizadores de Selenium:
@@ -329,7 +406,9 @@ Las funciones auxiliares centralizan acciones comunes, como el inicio de sesión
 
 El módulo `utils/api_utils.py` reúne las funciones utilizadas para realizar operaciones GET, POST, PATCH y DELETE, evitando repetir código en los tests de API.
 
-Los fixtures de Pytest administran la preparación y limpieza del navegador, favoreciendo la independencia entre los tests.
+Los fixtures de Pytest administran la preparación y limpieza del navegador en las pruebas correspondientes.
+
+En BDD, cada escenario cuenta con su propio navegador mediante los hooks de Behave.
 
 Los datos de prueba se mantienen separados del código para facilitar su mantenimiento y ampliación.
 
@@ -341,15 +420,15 @@ En esos casos puede responder con HTTP 429 (Too Many Requests). Esta respuesta c
 
 JSONPlaceholder se utiliza para practicar operaciones de escritura y ciclo de vida de recursos, aunque no persiste realmente los cambios.
 
-
 ## Evidencias de ejecución
 
 El proyecto genera distintas evidencias para facilitar el seguimiento y análisis de las pruebas:
 
 - **Reporte HTML:** resumen de los resultados de la ejecución, generado en `reports/report.html`.
-- **Capturas de pantalla:** se guardan cuando una prueba UI falla.
-- **Logs:** registro de la ejecución en `logs/suite.log`, con información sobre pruebas aprobadas, fallidas y salteadas.
-- **GitHub Actions:** ejecución automatizada de las pruebas UI y API ante cada push o pull request a la rama main.
+- **Capturas de pantalla:** se guardan cuando una prueba UI falla y ante errores en los pasos BDD.
+- **Logs:** registro de la ejecución en `logs/suite.log`.
+- **Reportes BDD:** resultados JSON y salida de texto generados en `reports/`.
+- **GitHub Actions:** ejecución automatizada de las pruebas UI, API y BDD ante cada push o pull request a la rama `main`.
 - **Artifacts:** reportes, capturas y logs disponibles para consultar desde las ejecuciones de GitHub Actions.
 
 ## Objetivos de aprendizaje
@@ -364,8 +443,12 @@ Este proyecto integra prácticas de automatización orientadas a:
 - Gestión externa de datos con CSV y JSON.
 - Sincronización mediante esperas explícitas.
 - Reutilización de funciones y fixtures.
+- Implementación de BDD con Behave y Gherkin.
+- Diseño con Page Object Model.
+- Integración de pruebas BDD dentro de Pytest.
 - Pruebas E2E de ciclo de vida de recursos.
 - Generación de reportes y evidencias.
+- Integración continua con GitHub Actions.
 - Control de versiones con Git y GitHub.
 
 ## Repositorio

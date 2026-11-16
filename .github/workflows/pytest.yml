@@ -25,9 +25,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Ejecutar pruebas UI y API
+      - name: Ejecutar pruebas UI, API y BDD
         env:
           REQRES_API_KEY: ${{ secrets.REQRES_API_KEY }}
+          CI: "true"
         run: python -m pytest
 
       - name: Guardar reportes, capturas y logs
