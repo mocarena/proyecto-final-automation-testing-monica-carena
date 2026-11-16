@@ -4,6 +4,7 @@ import pytest
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException
 
 from utils.datos import leer_json_productos
 from utils.saucedemo_helpers import login
@@ -32,10 +33,10 @@ def test_agregar_producto_desde_json(usuario_logueado, producto):
 
     # Agrega el producto indicado en el JSON
     boton_agregar = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable(
-        (By.XPATH, producto["xpath_add_button"])
+        EC.element_to_be_clickable(
+            (By.XPATH, producto["xpath_add_button"])
+        )
     )
-)
     boton_agregar.click()
 
     # Verifica que el carrito tenga un producto
@@ -53,11 +54,19 @@ def test_agregar_producto_desde_json(usuario_logueado, producto):
         )
     )
 
+    url_anterior = driver.current_url
     enlace_carrito.click()
 
-    WebDriverWait(driver, 15).until(
-        EC.url_contains("/cart.html")
-    )
+    try:
+        WebDriverWait(driver, 15).until(
+            EC.url_contains("/cart.html")
+        )
+    except TimeoutException:
+        print(f"URL anterior: {url_anterior}")
+        print(f"URL después del clic: {driver.current_url}")
+        print(f"Título: {driver.title}")
+        driver.save_screenshot("reports/error_navegacion_carrito.png")
+        raise
 
     # Comprueba que el producto correcto esté en el carrito
     producto_carrito = WebDriverWait(driver, 10).until(
