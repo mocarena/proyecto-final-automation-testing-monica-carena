@@ -10,7 +10,7 @@ Se aplican buenas prácticas de QA, reutilización de código, parametrización,
 
 ## Tecnologías
 
-- Python 3
+- Python 3.12
 - Selenium WebDriver 4
 - Pytest
 - Behave
@@ -21,11 +21,12 @@ Se aplican buenas prácticas de QA, reutilización de código, parametrización,
 - Google Chrome
 - Git / GitHub
 - CSV y JSON para datos de prueba
+- GitHub Actions
 
 ## Estructura del proyecto
 
 ```text
-pre-entrega-automation-testing-monica-carena/
+proyecto-final-automation-testing-monica-carena/
 |
 |-- .github/
 |   |-- workflows/
@@ -54,6 +55,7 @@ pre-entrega-automation-testing-monica-carena/
 |   |-- .gitkeep
 |
 |-- tests/
+|   |-- conftest.py
 |   |-- test_saucedemo.py
 |   |-- test_login_csv.py
 |   |-- test_carrito_json.py
@@ -69,8 +71,8 @@ pre-entrega-automation-testing-monica-carena/
 |
 |-- utils/
 |   |-- api_utils.py
-|   |-- driver_factory.py
 |   |-- datos.py
+|   |-- driver_factory.py
 |   |-- saucedemo_helpers.py
 |
 |-- behave.ini
@@ -81,13 +83,15 @@ pre-entrega-automation-testing-monica-carena/
 |-- README.md
 ```
 
+Los directorios `reports/` y `logs/` contienen archivos generados durante las ejecuciones. Los reportes, capturas y logs no se versionan en Git; se conservan localmente y como artifacts de GitHub Actions.
+
 ## Instalación
 
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/mocarena/pre-entrega-automation-testing-monica-carena.git
-cd pre-entrega-automation-testing-monica-carena
+git clone https://github.com/mocarena/proyecto-final-automation-testing-monica-carena.git
+cd proyecto-final-automation-testing-monica-carena
 ```
 
 ### 2. Crear y activar un entorno virtual
@@ -122,7 +126,7 @@ $env:REQRES_API_KEY = "TU_API_KEY"
 
 La clave se utiliza mediante la variable de entorno `REQRES_API_KEY` y no debe incluirse directamente en el código ni publicarse en GitHub.
 
-Esta configuración se mantiene durante la sesión actual de PowerShell. Para GitHub Actions, la clave se configura como un secret del repositorio.
+Esta configuración se mantiene durante la sesión actual de PowerShell. Para GitHub Actions, la clave se configura como un secret del repositorio con el nombre `REQRES_API_KEY`.
 
 ## Ejecución de las pruebas
 
@@ -263,6 +267,8 @@ python -m pytest tests_behave/ -v
 ```
 
 La integración permite incluir las ejecuciones BDD dentro de la suite general de Pytest.
+
+Además, se generan reportes JSON y TXT para las ejecuciones smoke y regression dentro de `reports/`.
 
 ## Generación del reporte HTML
 
@@ -429,7 +435,7 @@ El proyecto genera distintas evidencias para facilitar el seguimiento y análisi
 - **Logs:** registro de la ejecución en `logs/suite.log`.
 - **Reportes BDD:** resultados JSON y salida de texto generados en `reports/`.
 - **GitHub Actions:** ejecución automatizada de las pruebas UI, API y BDD ante cada push o pull request a la rama `main`.
-- **Artifacts:** reportes, capturas y logs disponibles para consultar desde las ejecuciones de GitHub Actions.
+- **Artifacts:** reportes, capturas y logs disponibles para consultar desde las ejecuciones de GitHub Actions, incluso cuando la ejecución presenta fallos.
 
 ## Objetivos de aprendizaje
 
@@ -455,4 +461,6 @@ Este proyecto integra prácticas de automatización orientadas a:
 
 **Proyecto:** Automation Testing - Monica Carena
 
-Repositorio: https://github.com/mocarena/pre-entrega-automation-testing-monica-carena
+**Repositorio público:**
+
+https://github.com/mocarena/proyecto-final-automation-testing-monica-carena
