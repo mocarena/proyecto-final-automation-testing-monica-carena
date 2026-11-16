@@ -45,10 +45,18 @@ def test_add_product_to_cart(driver):
     """Add the first product and verify it is present in the cart."""
     login(driver)
 
-    products = driver.find_elements(By.CSS_SELECTOR, "div.inventory_item")
-    assert products, "No products available to add."
+    wait = WebDriverWait(driver, 10)
+
+    wait.until(EC.url_contains("/inventory.html"))
+
+    products = wait.until(
+        EC.presence_of_all_elements_located(
+            (By.CSS_SELECTOR, "div.inventory_item")
+        )
+    )
 
     first_product = products[0]
+
     product_name = first_product.find_element(
         By.CSS_SELECTOR, ".inventory_item_name"
     ).text
@@ -57,15 +65,18 @@ def test_add_product_to_cart(driver):
         By.CSS_SELECTOR, "button"
     ).click()
 
-    wait = WebDriverWait(driver, 10)
     badge = wait.until(
         EC.visibility_of_element_located(
             (By.CSS_SELECTOR, ".shopping_cart_badge")
         )
     )
+
     assert badge.text == "1"
 
-    driver.find_element(By.CSS_SELECTOR, ".shopping_cart_link").click()
+    driver.find_element(
+        By.CSS_SELECTOR, ".shopping_cart_link"
+    ).click()
+
     wait.until(EC.url_contains("/cart.html"))
 
     cart_product = wait.until(
@@ -73,6 +84,7 @@ def test_add_product_to_cart(driver):
             (By.CSS_SELECTOR, ".cart_item .inventory_item_name")
         )
     )
+
     assert cart_product.text == product_name
 
     print("Test OK")

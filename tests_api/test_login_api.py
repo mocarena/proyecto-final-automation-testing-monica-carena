@@ -1,8 +1,6 @@
 
 import pytest
-import requests
-
-BASE_URL = "https://reqres.in"
+from utils.api_utils import BASE_URL_REQRES, api_post
 
 
 @pytest.mark.api
@@ -14,14 +12,14 @@ BASE_URL = "https://reqres.in"
     ],
 )
 def test_login_api(email, password, expected_status):
-    url = f"{BASE_URL}/api/login"
+    url = f"{BASE_URL_REQRES}/api/login"
 
     payload = {"email": email}
 
     if password:
         payload["password"] = password
 
-    response = requests.post(url, json=payload)
+    response = api_post(url, payload)
 
     assert response.status_code == expected_status
 

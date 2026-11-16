@@ -1,15 +1,13 @@
 
 import pytest
-import requests
-
-BASE_URL = "https://reqres.in"
+from utils.api_utils import BASE_URL_REQRES, api_get
 
 
 @pytest.mark.api
 def test_get_users():
-    url = f"{BASE_URL}/api/users?page=1"
+    url = f"{BASE_URL_REQRES}/api/users?page=1"
 
-    response = requests.get(url)
+    response = api_get(url)
 
     assert response.status_code == 200
 

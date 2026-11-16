@@ -1,4 +1,4 @@
-# Entrega Final - Automation Testing - Monica Carena
+# Automation Testing - Monica Carena
 
 ## Propósito
 
@@ -39,6 +39,7 @@ pre-entrega-automation-testing-monica-carena/
 │   ├── __init__.py
 │   ├── driver_factory.py
 │   ├── saucedemo_helpers.py
+│   ├── api_utils.py
 │   └── datos.py
 ├── datos/
 │   ├── login.csv
@@ -84,7 +85,7 @@ Es necesario tener Google Chrome instalado para ejecutar las pruebas web.
 Ejecutar toda la suite:
 
 ```bash
-python -m pytest -v
+python -m pytest tests/ tests_api/ -v
 ```
 
 ### Pruebas web con Selenium
@@ -166,7 +167,7 @@ python -m pytest -m smoke -v
 Para generar un reporte autocontenido con los resultados de toda la ejecución:
 
 ```bash
-python -m pytest tests/ tests_api/ --html=reporte_completo.html --self-contained-html
+python -m pytest tests/ tests_api/ -v --html=reporte_completo.html --self-contained-html
 ```
 
 Luego, abrir `reporte_completo.html` en el navegador para consultar los resultados.
@@ -278,13 +279,21 @@ Se emplean esperas explícitas con `WebDriverWait` y condiciones esperadas para 
 
 ## Reutilización y aislamiento
 
-Las funciones auxiliares centralizan acciones comunes, como el inicio de sesión.
+Las funciones auxiliares centralizan acciones comunes, como el inicio de sesión y las solicitudes HTTP.
+
+El módulo `utils/api_utils.py` reúne las funciones utilizadas para realizar operaciones GET, POST, PATCH y DELETE, evitando repetir código en los tests de API.
 
 Los fixtures de Pytest administran la preparación y limpieza del navegador, favoreciendo la independencia entre los tests.
 
 Los datos de prueba se mantienen separados del código para facilitar su mantenimiento y ampliación.
 
-También se utiliza `requests.Session()` para agrupar las operaciones del flujo E2E de API.
+## Consideraciones sobre los servicios API
+
+ReqRes es un servicio externo y puede limitar temporalmente la cantidad de solicitudes recibidas.
+
+En esos casos puede responder con HTTP 429 (Too Many Requests). Esta respuesta corresponde a una limitación del servicio y no reemplaza los códigos esperados definidos en los escenarios de prueba.
+
+JSONPlaceholder se utiliza para practicar operaciones de escritura y ciclo de vida de recursos, aunque no persiste realmente los cambios.
 
 ## Evidencias
 
@@ -313,6 +322,6 @@ Este proyecto integra prácticas de automatización orientadas a:
 
 ## Repositorio
 
-**Proyecto:** Entrega Final - Automation Testing - Monica Carena
+**Proyecto:** Automation Testing - Monica Carena
 
 Repositorio: https://github.com/mocarena/pre-entrega-automation-testing-monica-carena

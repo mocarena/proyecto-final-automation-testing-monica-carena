@@ -1,9 +1,6 @@
-
 import pytest
-import requests
 from datetime import datetime
-
-BASE_URL = "https://reqres.in"
+from utils.api_utils import BASE_URL_REQRES, api_post
 
 
 @pytest.mark.api
@@ -17,14 +14,14 @@ BASE_URL = "https://reqres.in"
     ],
 )
 def test_create_user(name, job):
-    url = f"{BASE_URL}/api/users"
+    url = f"{BASE_URL_REQRES}/api/users"
 
     payload = {
         "name": name,
         "job": job
     }
 
-    response = requests.post(url, json=payload)
+    response = api_post(url, payload)
 
     assert response.status_code == 201
 
@@ -35,3 +32,4 @@ def test_create_user(name, job):
     assert "id" in data
     assert "createdAt" in data
     assert data["createdAt"][:4] == str(datetime.now().year)
+    
