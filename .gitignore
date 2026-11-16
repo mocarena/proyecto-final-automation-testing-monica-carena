@@ -14,3 +14,7 @@ __pycache__/
 # Capturas de fallos: no subir automáticamente
 reports/*.png
 ```
+
+# Reportes HTML
+reports/*.html
+reporte_completo.html
