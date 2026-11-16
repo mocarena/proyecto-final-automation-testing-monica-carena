@@ -3,3 +3,4 @@ pytest
 pytest-html
 pytest-rerunfailures
 requests
+Faker
