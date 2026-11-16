@@ -56,9 +56,7 @@ def test_agregar_producto_desde_json(usuario_logueado, producto):
     enlace_carrito.click()
 
     WebDriverWait(driver, 15).until(
-        EC.visibility_of_element_located(
-            (By.CSS_SELECTOR, ".cart_list")
-        )
+        EC.url_contains("/cart.html")
     )
 
     # Comprueba que el producto correcto esté en el carrito
