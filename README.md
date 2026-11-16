@@ -288,6 +288,22 @@ reports/report.html
 
 Luego, abrir `report.html` en el navegador para consultar los resultados de la ejecución, el estado de cada test y los posibles errores.
 
+### ¿Cómo interpretar el reporte?
+
+Al abrir `reports/report.html` en el navegador, se puede consultar el resultado de la ejecución de las pruebas.
+
+El reporte permite identificar:
+
+- **Passed:** pruebas ejecutadas correctamente.
+- **Failed:** pruebas que no cumplieron las validaciones esperadas.
+- **Skipped:** pruebas que no se ejecutaron.
+- **Duration:** tiempo que llevó ejecutar cada prueba.
+- **Failure details:** información del error para analizar qué provocó el fallo.
+
+Cuando una prueba de UI falla y utiliza el fixture del navegador, se captura una screenshot y se adjunta al reporte para facilitar el análisis.
+
+El reporte es autocontenido, por lo que se puede abrir directamente en el navegador sin instalar herramientas adicionales.
+
 ## Casos de prueba implementados
 
 ### 1. Login y navegación
