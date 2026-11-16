@@ -24,32 +24,56 @@ Se aplican buenas prácticas de QA, reutilización de código, parametrización,
 
 ```text
 pre-entrega-automation-testing-monica-carena/
-├── tests/
-│   ├── conftest.py
-│   ├── test_saucedemo.py
-│   ├── test_login_csv.py
-│   └── test_carrito_json.py
-├── tests_api/
-│   ├── __init__.py
-│   ├── test_login_api.py
-│   ├── test_users_api.py
-│   ├── test_create_user_api.py
-│   └── test_post_lifecycle.py
-├── utils/
-│   ├── __init__.py
-│   ├── driver_factory.py
-│   ├── saucedemo_helpers.py
-│   ├── api_utils.py
-│   └── datos.py
-├── datos/
-│   ├── login.csv
-│   └── productos.json
-├── reports/
-├── requirements.txt
-├── pytest.ini
-├── .gitignore
-└── README.md
+|
+|-- .github/
+|   |-- workflows/
+|       |-- pytest.yml
+|
+|-- datos/
+|   |-- login.csv
+|   |-- productos.json
+|
+|-- logs/
+|   |-- .gitkeep
+|
+|-- reports/
+|   |-- .gitkeep
+|
+|-- tests/
+|   |-- test_saucedemo.py
+|   |-- test_login_csv.py
+|   |-- test_carrito_json.py
+|
+|-- tests_api/
+|   |-- test_login_api.py
+|   |-- test_users_api.py
+|   |-- test_create_user_api.py
+|   |-- test_post_lifecycle.py
+|
+|-- utils/
+|   |-- api_utils.py
+|   |-- driver_factory.py
+|   |-- datos.py
+|   |-- saucedemo_helpers.py
+|
+|-- conftest.py
+|-- pytest.ini
+|-- requirements.txt
+|-- .gitignore
+|-- README.md
 ```
+
+## Instalación
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/mocarena/pre-entrega-automation-testing-monica-carena.git
+cd pre-entrega-automation-testing-monica-carena
+```
+
+### 2. Crear y activar un entorno virtual
+
 
 ## Instalación
 
@@ -154,6 +178,21 @@ Se comprueban los códigos de respuesta, los datos devueltos, los tipos y el tie
 
 Para este ejercicio se utiliza JSONPlaceholder, que simula las operaciones de escritura sin persistir realmente los cambios en una base de datos.
 
+
+### 4. Configurar la API Key de ReqRes
+
+Para ejecutar las pruebas contra ReqRes es necesario configurar una API Key.
+
+En PowerShell (Windows):
+
+```powershell
+$env:REQRES_API_KEY = "TU_API_KEY"
+```
+
+La clave se utiliza mediante la variable de entorno `REQRES_API_KEY` y no debe incluirse directamente en el código ni publicarse en GitHub.
+
+Esta configuración se mantiene durante la sesión actual de PowerShell.
+
 ### Pruebas smoke
 
 Ejecutar las pruebas marcadas como smoke:
@@ -162,17 +201,24 @@ Ejecutar las pruebas marcadas como smoke:
 python -m pytest -m smoke -v
 ```
 
+
 ## Generación del reporte HTML
 
-Para generar un reporte autocontenido con los resultados de toda la ejecución:
+El proyecto utiliza pytest-html para generar automáticamente un reporte autocontenido con los resultados de toda la ejecución.
+
+Para ejecutar las pruebas:
 
 ```bash
-python -m pytest tests/ tests_api/ -v --html=reporte_completo.html --self-contained-html
+python -m pytest
 ```
 
-Luego, abrir `reporte_completo.html` en el navegador para consultar los resultados.
+El reporte se genera en:
 
-El reporte permite revisar el estado de cada test, los resultados de la ejecución y los posibles errores.
+```text
+reports/report.html
+```
+
+Luego, abrir `report.html` en el navegador para consultar los resultados de la ejecución, el estado de cada test y los posibles errores.
 
 ## Casos de prueba implementados
 
@@ -295,14 +341,16 @@ En esos casos puede responder con HTTP 429 (Too Many Requests). Esta respuesta c
 
 JSONPlaceholder se utiliza para practicar operaciones de escritura y ciclo de vida de recursos, aunque no persiste realmente los cambios.
 
-## Evidencias
 
-El proyecto permite generar:
+## Evidencias de ejecución
 
-- Reportes HTML de ejecución.
-- Capturas PNG ante fallos, según la configuración de `conftest.py`.
-- Resultados individuales y parametrizados en la terminal.
-- Validaciones de operaciones API y tiempos de ejecución.
+El proyecto genera distintas evidencias para facilitar el seguimiento y análisis de las pruebas:
+
+- **Reporte HTML:** resumen de los resultados de la ejecución, generado en `reports/report.html`.
+- **Capturas de pantalla:** se guardan cuando una prueba UI falla.
+- **Logs:** registro de la ejecución en `logs/suite.log`, con información sobre pruebas aprobadas, fallidas y salteadas.
+- **GitHub Actions:** ejecución automatizada de las pruebas UI y API ante cada push o pull request a la rama main.
+- **Artifacts:** reportes, capturas y logs disponibles para consultar desde las ejecuciones de GitHub Actions.
 
 ## Objetivos de aprendizaje
 

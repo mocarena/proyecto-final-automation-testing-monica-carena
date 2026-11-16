@@ -73,11 +73,19 @@ def test_add_product_to_cart(driver):
 
     assert badge.text == "1"
 
-    driver.find_element(
-        By.CSS_SELECTOR, ".shopping_cart_link"
-    ).click()
+    cart_link = wait.until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, ".shopping_cart_link")
+        )
+    )
 
-    wait.until(EC.url_contains("/cart.html"))
+    cart_link.click()
+
+    wait.until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, ".cart_list")
+        )
+    )
 
     cart_product = wait.until(
         EC.visibility_of_element_located(

@@ -47,13 +47,18 @@ def test_agregar_producto_desde_json(usuario_logueado, producto):
     assert badge.text == "1"
 
     # Abre el carrito
-    driver.find_element(
-        By.CSS_SELECTOR,
-        "[data-test='shopping-cart-link']"
-    ).click()
+    enlace_carrito = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable(
+            (By.CSS_SELECTOR, "[data-test='shopping-cart-link']")
+        )
+    )
 
-    WebDriverWait(driver, 10).until(
-        EC.url_contains("/cart.html")
+    enlace_carrito.click()
+
+    WebDriverWait(driver, 15).until(
+        EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, ".cart_list")
+        )
     )
 
     # Comprueba que el producto correcto esté en el carrito
@@ -67,7 +72,6 @@ def test_agregar_producto_desde_json(usuario_logueado, producto):
         f"Esperaba '{producto['nombre']}', "
         f"pero encontré '{producto_carrito.text}'"
     )
-
 
 @pytest.mark.smoke
 def test_carrito_smoke(usuario_logueado):
