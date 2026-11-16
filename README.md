@@ -1,5 +1,7 @@
 # Automation Testing - Monica Carena
 
+[![Ejecucion de pruebas QA](https://github.com/mocarena/proyecto-final-automation-testing-monica-carena/actions/workflows/pytest.yml/badge.svg)](https://github.com/mocarena/proyecto-final-automation-testing-monica-carena/actions/workflows/pytest.yml)
+
 ## Propósito
 
 Proyecto de automatización de pruebas desarrollado con Python, Pytest, Selenium WebDriver, Requests y Behave.
@@ -167,6 +169,7 @@ Ejecutar todos los tests de API:
 ```bash
 python -m pytest -m api -v
 ```
+El ciclo de vida de JSONPlaceholder se ejecuta por separado mediante el marcador `e2e`.
 
 Ejecutar las pruebas de login:
 
